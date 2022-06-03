@@ -33,13 +33,13 @@ namespace Dgraph.Transactions
 
         protected readonly TxnContext Context;
 
-        protected readonly Boolean ReadOnly;
+        protected readonly bool ReadOnly;
 
-        protected readonly Boolean BestEffort;
+        protected readonly bool BestEffort;
 
         internal ReadOnlyTransaction(IDgraphClientInternal client, bool bestEffort) : this(client, true, bestEffort) { }
 
-        protected ReadOnlyTransaction(IDgraphClientInternal client, Boolean readOnly, Boolean bestEffort) {
+        protected ReadOnlyTransaction(IDgraphClientInternal client, bool readOnly, bool bestEffort) {
             Client = client;
             ReadOnly = readOnly;
             BestEffort = bestEffort;
@@ -68,13 +68,15 @@ namespace Dgraph.Transactions
             }
 
             try {
-                Api.Request request = new Api.Request();
-                request.Query = queryString;
+                var request = new Api.Request()
+                {
+                    Query = queryString,
+                    StartTs = Context.StartTs,
+                    Hash = Context.Hash,
+                    ReadOnly = ReadOnly,
+                    BestEffort = BestEffort
+                };
                 request.Vars.Add(varMap);
-                request.StartTs = Context.StartTs;
-                request.Hash = Context.Hash;
-                request.ReadOnly = ReadOnly;
-                request.BestEffort = BestEffort;
 
                 var response = await Client.DgraphExecute(
                     async (dg) => 
@@ -87,7 +89,7 @@ namespace Dgraph.Transactions
                         Result.Fail<Response>(new FluentResults.ExceptionalError(rpcEx))
                 );
 
-                if(response.IsFailed) {
+                if (response.IsFailed) {
                     return response;
                 }
 

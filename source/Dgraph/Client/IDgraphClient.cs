@@ -52,7 +52,7 @@ namespace Dgraph
         /// requests to Zero. This may yield improved latencies in read-bound 
         /// workloads where linearizable reads are not strictly needed.
         /// </summary>
-        IQuery NewReadOnlyTransaction(Boolean bestEffort = false);
+        IQuery NewReadOnlyTransaction(bool bestEffort = false);
 
         /// <summary>
         /// Create a transaction that can run queries and mutations.

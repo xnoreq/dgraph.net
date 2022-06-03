@@ -25,7 +25,7 @@ namespace Dgraph.Transactions
 
     internal class Transaction : ReadOnlyTransaction, ITransaction {
 
-        private bool HasMutated;
+        private bool hasMutated;
 
         internal Transaction(IDgraphClientInternal client) : base(client, false, false) { }
 
@@ -35,7 +35,7 @@ namespace Dgraph.Transactions
         ) {
             AssertNotDisposed();
 
-            CallOptions opts = options ?? new CallOptions();
+            var opts = options ?? new CallOptions();
 
             if (TransactionState != TransactionState.OK) {
                 return Result.Fail<Response>(new TransactionNotOK(TransactionState.ToString()));
@@ -46,7 +46,7 @@ namespace Dgraph.Transactions
                 return Result.Ok<Response>(new Response(new Api.Response()));
             }
 
-            HasMutated = true;
+            hasMutated = true;
 
             req.StartTs = Context.StartTs;
             req.Hash = Context.Hash;
@@ -56,8 +56,8 @@ namespace Dgraph.Transactions
                 (rpcEx) => Result.Fail<Response>(new ExceptionalError(rpcEx))
             );
 
-            if(response.IsFailed) {
-                await Discard(); // Ignore error - user should see the original error.
+            if (response.IsFailed) {
+                _ = await Discard(); // Ignore error - user should see the original error.
 
                 TransactionState = TransactionState.Error; // overwrite the aborted value
                 return response;
@@ -107,7 +107,7 @@ namespace Dgraph.Transactions
 
             TransactionState = TransactionState.Aborted;
 
-            if (!HasMutated) {
+            if (!hasMutated) {
                 return Result.Ok();
             }
 
@@ -133,7 +133,7 @@ namespace Dgraph.Transactions
 
             TransactionState = TransactionState.Committed;
 
-            if (!HasMutated) {
+            if (!hasMutated) {
                 return Result.Ok();
             }
 
@@ -155,18 +155,18 @@ namespace Dgraph.Transactions
         //
         #region disposable pattern
 
-        private bool Disposed;
+        private bool disposed;
 
         protected override void AssertNotDisposed() {
-            if (Disposed) {
+            if (disposed) {
                 throw new ObjectDisposedException(GetType().Name);
             }
         }
 
         public void Dispose() {
 
-            if (!Disposed && TransactionState == TransactionState.OK) {
-                Disposed = true;
+            if (!disposed && TransactionState == TransactionState.OK) {
+                disposed = true;
 
                 // This makes Discard run async (maybe another thread)  So the current thread 
                 // might exit and get back to work (we don't really care how the Discard() went).
