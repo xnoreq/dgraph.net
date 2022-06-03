@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -31,7 +31,7 @@
   <ItemGroup>
     <Protobuf Include="github.com/dgraph-io/dgraph/protos/pb.proto" />
     <Protobuf Include="github.com/dgraph-io/dgo/protos/api.proto" />
-    <Protobuf Include="github.com/dgraph-io/badger/pb/badger.proto" />
+    <Protobuf Include="github.com/dgraph-io/badger/v3/pb/badgerpb3.proto" />
     <Protobuf Include="github.com/gogo/protobuf/gogoproto/gogo.proto" />
   </ItemGroup>
 
