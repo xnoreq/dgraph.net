@@ -63,7 +63,7 @@ namespace Dgraph.Transactions
             AssertNotDisposed();
 
             if (TransactionState != TransactionState.OK) {
-                return Results.Fail<Response>(
+                return Result.Fail<Response>(
                     new TransactionNotOK(TransactionState.ToString()));
             }
 
@@ -78,13 +78,13 @@ namespace Dgraph.Transactions
 
                 var response = await Client.DgraphExecute(
                     async (dg) => 
-                        Results.Ok<Response>(
+                        Result.Ok<Response>(
                             new Response(await dg.QueryAsync(
                                 request, 
                                 options ?? new CallOptions(null, null, default(CancellationToken)))
                         )),
                     (rpcEx) => 
-                        Results.Fail<Response>(new FluentResults.ExceptionalError(rpcEx))
+                        Result.Fail<Response>(new FluentResults.ExceptionalError(rpcEx))
                 );
 
                 if(response.IsFailed) {
@@ -100,13 +100,13 @@ namespace Dgraph.Transactions
                 }
 
             } catch (Exception ex) {
-                return Results.Fail<Response>(new FluentResults.ExceptionalError(ex));
+                return Result.Fail<Response>(new FluentResults.ExceptionalError(ex));
             }
         }
 
         protected FluentResults.Result MergeContext(TxnContext srcContext) {
             if (srcContext == null) {
-                return Results.Ok();
+                return Result.Ok();
             }
 
             if (Context.StartTs == 0) {
@@ -114,7 +114,7 @@ namespace Dgraph.Transactions
             }
 
             if (Context.StartTs != srcContext.StartTs) {
-                return Results.Fail(new StartTsMismatch());
+                return Result.Fail(new StartTsMismatch());
             }
 
             Context.Hash = srcContext.Hash;
@@ -122,7 +122,7 @@ namespace Dgraph.Transactions
             Context.Keys.Add(srcContext.Keys);
             Context.Preds.Add(srcContext.Preds);
 
-            return Results.Ok();
+            return Result.Ok();
         }
 
         protected virtual void AssertNotDisposed() { }

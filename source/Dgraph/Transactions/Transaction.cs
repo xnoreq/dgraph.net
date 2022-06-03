@@ -38,12 +38,12 @@ namespace Dgraph.Transactions
             CallOptions opts = options ?? new CallOptions();
 
             if (TransactionState != TransactionState.OK) {
-                return Results.Fail<Response>(new TransactionNotOK(TransactionState.ToString()));
+                return Result.Fail<Response>(new TransactionNotOK(TransactionState.ToString()));
             }
 
             var req = request.Request;
             if (req.Mutations.Count == 0) {
-                return Results.Ok<Response>(new Response(new Api.Response()));
+                return Result.Ok<Response>(new Response(new Api.Response()));
             }
 
             HasMutated = true;
@@ -52,8 +52,8 @@ namespace Dgraph.Transactions
             req.Hash = Context.Hash;
 
             var response = await Client.DgraphExecute(
-                async (dg) => Results.Ok<Response>(new Response(await dg.QueryAsync(req, opts))),
-                (rpcEx) => Results.Fail<Response>(new ExceptionalError(rpcEx))
+                async (dg) => Result.Ok<Response>(new Response(await dg.QueryAsync(req, opts))),
+                (rpcEx) => Result.Fail<Response>(new ExceptionalError(rpcEx))
             );
 
             if(response.IsFailed) {
@@ -76,10 +76,10 @@ namespace Dgraph.Transactions
                 // error - just 
                 //   if (...IsFailed) { ...assume mutation failed...}
                 // is enough.
-                return Results.Ok<Response>(response.Value).WithReasons(err.Reasons);
+                return Result.Ok<Response>(response.Value).WithReasons(err.Reasons);
             }
 
-            return Results.Ok<Response>(response.Value);
+            return Result.Ok<Response>(response.Value);
         }
 
         public async Task<FluentResults.Result<Response>> Mutate(
@@ -102,13 +102,13 @@ namespace Dgraph.Transactions
                 // TransactionState.Committed can't be discarded
                 // TransactionState.Error only entered after Discard() is already called.
                 // TransactionState.Aborted multiple Discards have no effect
-                return Results.Ok();
+                return Result.Ok();
             }
 
             TransactionState = TransactionState.Aborted;
 
             if (!HasMutated) {
-                return Results.Ok();
+                return Result.Ok();
             }
 
             Context.Aborted = true;
@@ -118,9 +118,9 @@ namespace Dgraph.Transactions
                     await dg.CommitOrAbortAsync(
                         Context,
                         options ?? new CallOptions(null, null, default(CancellationToken)));
-                    return Results.Ok();
+                    return Result.Ok();
                 },
-                (rpcEx) => Results.Fail(new ExceptionalError(rpcEx))
+                (rpcEx) => Result.Fail(new ExceptionalError(rpcEx))
             );
         }
 
@@ -128,13 +128,13 @@ namespace Dgraph.Transactions
             AssertNotDisposed();
 
             if (TransactionState != TransactionState.OK) {
-                return Results.Fail(new TransactionNotOK(TransactionState.ToString()));
+                return Result.Fail(new TransactionNotOK(TransactionState.ToString()));
             }
 
             TransactionState = TransactionState.Committed;
 
             if (!HasMutated) {
-                return Results.Ok();
+                return Result.Ok();
             }
 
             return await Client.DgraphExecute(
@@ -142,9 +142,9 @@ namespace Dgraph.Transactions
                     await dg.CommitOrAbortAsync(
                         Context,
                         options ?? new CallOptions(null, null, default(CancellationToken)));
-                    return Results.Ok();
+                    return Result.Ok();
                 },
-                (rpcEx) => Results.Fail(new ExceptionalError(rpcEx))
+                (rpcEx) => Result.Fail(new ExceptionalError(rpcEx))
             );
         }
 

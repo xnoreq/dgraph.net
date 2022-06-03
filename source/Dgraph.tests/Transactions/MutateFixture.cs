@@ -60,7 +60,7 @@ namespace Dgraph.tests.Transactions {
             client.DgraphExecute(
                 Arg.Any<Func<Api.Dgraph.DgraphClient, Task<Result<Response>>>>(),
                 Arg.Any<Func<RpcException, Result<Response>>>()).Returns(
-                    Results.Fail(new ExceptionalError(new RpcException(new Status(), "Something failed"))));
+                    Result.Fail(new ExceptionalError(new RpcException(new Status(), "Something failed"))));
 
             var result = await txn.Mutate(req);
 
@@ -80,7 +80,7 @@ namespace Dgraph.tests.Transactions {
             client.DgraphExecute(
                 Arg.Any<Func<Api.Dgraph.DgraphClient, Task<Result<Response>>>>(),
                 Arg.Any<Func<RpcException, Result<Response>>>()).Returns(
-                    Results.Ok(new Response(response)));
+                    Result.Ok(new Response(response)));
 
             var req = new RequestBuilder().
                 WithMutations(new MutationBuilder{ SetJson = "json" });

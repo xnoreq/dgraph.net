@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using Dgraph.tests.e2e.Orchestration;
 using Dgraph.tests.e2e.Tests.TestClasses;
 using FluentAssertions;
+using Api;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Api;
-using Dgraph.Transactions;
 
 namespace Dgraph.tests.e2e.Tests
 {

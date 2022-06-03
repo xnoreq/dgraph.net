@@ -62,7 +62,7 @@ namespace Dgraph.tests.Transactions
             client.DgraphExecute(
                 Arg.Any<Func<Api.Dgraph.DgraphClient, Task<Result>>>(),
                 Arg.Any<Func<RpcException, Result>>()).Returns(
-                    Results.Fail(new ExceptionalError(new RpcException(new Status(), "Something failed"))));
+                    Result.Fail(new ExceptionalError(new RpcException(new Status(), "Something failed"))));
             var result = await txn.Discard();
 
             result.IsFailed.Should().BeTrue();

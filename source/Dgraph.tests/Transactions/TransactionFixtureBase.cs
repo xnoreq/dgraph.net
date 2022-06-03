@@ -18,7 +18,7 @@ namespace Dgraph.tests.Transactions
             var response = new Response(dgResp);
             client.DgraphExecute(
                 Arg.Any<Func<Api.Dgraph.DgraphClient, Task<Result<Response>>>>(),
-                Arg.Any<Func<RpcException, Result<Response>>>()).Returns(Results.Ok(response));
+                Arg.Any<Func<RpcException, Result<Response>>>()).Returns(Result.Ok(response));
 
             return (client, response);
         }

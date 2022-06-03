@@ -48,7 +48,7 @@ namespace Dgraph.tests.Transactions
             var tests = GetAllTestFunctions(txn);
 
             foreach (var test in tests) {
-                test.Should().Throw<ObjectDisposedException>();
+                test.Should().ThrowAsync<ObjectDisposedException>();
             }
         }
 
@@ -59,7 +59,7 @@ namespace Dgraph.tests.Transactions
             client.DgraphExecute(
                 Arg.Any<Func<Api.Dgraph.DgraphClient, Task<Result<Response>>>>(),
                 Arg.Any<Func<RpcException, Result<Response>>>()).Returns(
-                    Results.Fail(new ExceptionalError(
+                    Result.Fail(new ExceptionalError(
                         new RpcException(new Status(), "Something failed"))));
             var txn = new Transaction(client);
             
