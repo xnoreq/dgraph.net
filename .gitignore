@@ -17,3 +17,5 @@ tools/**
 # ignore test runs
 E2E-Logs
 
+# Visual Studio
+.vs
