@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Api;
 using Dgraph.Transactions;
 using FluentResults;
@@ -29,17 +28,30 @@ using System.Threading.Tasks;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Dgraph.tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("DynamicProxyGenAssembly2")] // for NSubstitute
 
-namespace Dgraph {
+namespace Dgraph
+{
 
     public class DgraphClient : IDgraphClient, IDgraphClientInternal {
 
-        private readonly List<Api.Dgraph.DgraphClient> dgraphs = 
-            new List<Api.Dgraph.DgraphClient>();
+        private readonly Api.Dgraph.DgraphClient[] dgraphs;
 
-        public DgraphClient(params GrpcChannel[] channels) {
-            foreach (var chan in channels) {
-                Api.Dgraph.DgraphClient client = new Api.Dgraph.DgraphClient(chan);
-                dgraphs.Add(client);
+        private GrpcChannel[] channelsToDispose;
+
+        public DgraphClient(params GrpcChannel[] channels) : this (channels, false) {
+        }
+
+        public DgraphClient(GrpcChannel[] channels, bool disposeChannels)
+        {
+            if (channels == null) throw new ArgumentNullException(nameof(channels));
+
+            channelsToDispose = disposeChannels ? channels : Array.Empty<GrpcChannel>();
+
+            dgraphs = new Api.Dgraph.DgraphClient[channels.Length];
+            for (int i = 0; i < channels.Length; i++)
+            {
+                GrpcChannel chan = channels[i];
+                var client = new Api.Dgraph.DgraphClient(chan);
+                dgraphs[i] = client;
             }
         }
 
@@ -56,7 +68,7 @@ namespace Dgraph {
             return new Transaction(this);
         }
 
-        public IQuery NewReadOnlyTransaction(Boolean bestEffort = false) {
+        public IQuery NewReadOnlyTransaction(bool bestEffort = false) {
             AssertNotDisposed();
 
             return new ReadOnlyTransaction(this, bestEffort);
@@ -74,7 +86,7 @@ namespace Dgraph {
         private int NextConnection = 0;
         private int GetNextConnection() {
 			var next = NextConnection;
-			NextConnection = (next  + 1) % dgraphs.Count;
+			NextConnection = (next  + 1) % dgraphs.Length;
             return next;
         }			
 
@@ -146,7 +158,7 @@ namespace Dgraph {
         protected bool Disposed => disposed;
 
         protected void AssertNotDisposed() {
-            if (Disposed) {
+            if (disposed) {
                 throw new ObjectDisposedException(GetType().Name);
             }
         }
@@ -155,13 +167,14 @@ namespace Dgraph {
             DisposeIDisposables();
         }
 
-        protected virtual void DisposeIDisposables() {
-            if (!Disposed) {
-                this.disposed = true;  
-                foreach (var dgraph in dgraphs) {
-                    // FIXME:
-                    // can't get to the chans??
-                    // dgraph. Dispose();
+        protected virtual void DisposeIDisposables()
+        {
+            if (!disposed)
+            {
+                disposed = true;
+                foreach (var channelToDispose in channelsToDispose)
+                {
+                    channelToDispose.Dispose();
                 }
             }
         }
