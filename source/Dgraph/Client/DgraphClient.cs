@@ -31,15 +31,28 @@ using System.Threading.Tasks;
 namespace Dgraph
 {
 
+    /// <summary>
+    /// <inheritdoc cref="IDgraphClient" />
+    /// </summary>
     public class DgraphClient : IDgraphClient, IDgraphClientInternal {
 
         private readonly Api.Dgraph.DgraphClient[] dgraphs;
 
         private GrpcChannel[] channelsToDispose;
 
+        /// <summary>
+        /// Creates a new Dgraph client that will use the given channels for communication.
+        /// The channels will not be managed.
+        /// </summary>
+        /// <param name="channels">the channels used for commmunication</param>
         public DgraphClient(params GrpcChannel[] channels) : this (channels, false) {
         }
 
+        /// <summary>
+        /// Creates a new Dgraph client that will use the given channels for communication.
+        /// The channels may be managed by the client which means that they will be disposed if this client is disposed
+        /// </summary>
+        /// <param name="disposeChannels"><see langword="true"/> if the client should manage and dispose the channels, otherwise <see langword="false"/></param>
         public DgraphClient(GrpcChannel[] channels, bool disposeChannels)
         {
             if (channels == null) throw new ArgumentNullException(nameof(channels));
