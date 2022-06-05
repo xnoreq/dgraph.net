@@ -23,9 +23,9 @@ namespace Dgraph
 {
 
     /// <summary>
-    /// An IDgraphClient is connected to a Dgraph cluster (to one or more Alpha
-    /// nodes).  Once a client is made, the client manages the connections and 
-    // shuts all connections down on exit.
+    /// An IDgraphClient is connected to a Dgraph cluster (to one or more Alpha nodes).
+    /// A client may manage the connections which means it will dispose them when the
+    /// client is disposed.
     /// </summary>
     /// <exception cref="System.ObjectDisposedException">Thrown if the client
     /// has been disposed and calls are made.</exception>
