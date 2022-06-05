@@ -17,7 +17,7 @@ namespace Dgraph.tests.e2e.Orchestration
             // with a Dgraph tls client certificate, and in enterprise mode.
             AppContext.SetSwitch(
                 "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            var client = new DgraphClient(GrpcChannel.ForAddress("http://127.0.0.1:9080"));
+            var client = new DgraphClient(new[] { GrpcChannel.ForAddress("http://127.0.0.1:9080") }, true);
 
             if(!printed) {
                 var result = await client.CheckVersion();
