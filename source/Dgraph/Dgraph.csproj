@@ -11,7 +11,7 @@
     <Product>.Net Dgraph Client</Product>
     <Description>Dgraph Client for .NET</Description>
     <Copyright></Copyright>
-    <PackageProjectUrl>https://github.com/dgraph-io/dgraph.net</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/xnoreq/dgraph.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xnoreq/dgraph.net</RepositoryUrl>
     <IncludeSymbols>True</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
