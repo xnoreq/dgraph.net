@@ -6,18 +6,20 @@
     <PackageId>Dgraph</PackageId>
     
     <Title>Dgraph Client for .NET </Title>
-    <Authors>Michael Compton, Ahmed El Bannan</Authors>
-    <Company>Dgraph Labs Inc</Company>
+    <Authors></Authors>
+    <Company></Company>
     <Product>.Net Dgraph Client</Product>
     <Description>Dgraph Client for .NET</Description>
-    <Copyright>Dgraph Labs Inc</Copyright>
+    <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/dgraph-io/dgraph.net</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dgraph-io/dgraph.net</RepositoryUrl>
+    <RepositoryUrl>https://github.com/xnoreq/dgraph.net</RepositoryUrl>
     <IncludeSymbols>True</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>21.12.01.01</PackageVersion>
+    <PackageVersion>1.0.0</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Support Dgraph 21.12.0</PackageReleaseNotes>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
