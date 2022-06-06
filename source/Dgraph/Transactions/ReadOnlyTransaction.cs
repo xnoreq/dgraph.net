@@ -51,12 +51,12 @@ namespace Dgraph.Transactions
             string queryString, 
             CallOptions? options = null
         ) {
-            return await QueryWithVars(queryString, new Dictionary<string, string>(), options);
+            return await QueryWithVars(queryString, null, options);
         }
 
         public async Task<FluentResults.Result<Response>> QueryWithVars(
             string queryString, 
-            IDictionary<string, string> varMap,
+            IDictionary<string, string> varMap = null,
             CallOptions? options = null
         ) {
 
@@ -76,7 +76,10 @@ namespace Dgraph.Transactions
                     ReadOnly = ReadOnly,
                     BestEffort = BestEffort
                 };
-                request.Vars.Add(varMap);
+                if (varMap != null)
+                {
+                    request.Vars.Add(varMap);
+                }
 
                 var response = await Client.DgraphExecute(
                     async (dg) => 
