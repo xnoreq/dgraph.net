@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 using System;
 using System.Threading.Tasks;
 using Grpc.Core;
@@ -22,26 +22,27 @@ namespace Dgraph.Transactions
 {
 
     /// <summary>
-    /// Use transactions like :
+    /// Represents a Dgraph transaction.
+    /// Use transactions like:
     ///     
-    /// <code>  
-    /// using(var txn = client.NewTransaction()) {
-    ///    txn.mutate
-    ///    txn.query
-    ///    txn.mutate
-    ///    txn.commit
-    /// } 
+    /// <code>
+    /// using (var txn = client.NewTransaction()) {
+    ///    txn.Mutate(...);
+    ///    txn.Query(...);
+    ///    txn.Mutate(...);
+    ///    txn.Commit();
+    /// }
     /// </code>
     ///
     /// or
     ///
-    /// <code>  
+    /// <code>
     /// var txn = client.NewTransaction()
-    /// txn.mutate()
-    /// if(...) {
-    ///    txn.commit();
-    /// } else {
-    ///    txn.discard();
+    /// try {
+    ///     txn.Mutate(...);
+    ///     txn.Commit();
+    /// } catch (Exception) {
+    ///    txn.Discard();
     /// }
     /// </code>
     /// </summary>
@@ -49,35 +50,35 @@ namespace Dgraph.Transactions
     
         /// <summary>
         /// Run a request that may involve multiple mutations.  
-        /// If CommitNow is set on the request, then
+        /// If <see cref="RequestBuilder.CommitNow"/> is set on the request, then
         /// the transaction will commit and can't be used again.
         /// </summary>
         Task<FluentResults.Result<Response>> Mutate(
             RequestBuilder request,
-            CallOptions? options = null    
+            CallOptions? options = null
         );
 
         /// <summary>
-        /// Convenience method to run a single mutation.  If CommitNow is set,
+        /// Convenience method to run a single mutation.  If <paramref name="commitNow"/> is set,
         /// the transaction will commit and can't be used again.
         /// </summary>
         Task<FluentResults.Result<Response>> Mutate(
             string setJson = null,
             string deleteJson = null,
             bool commitNow = false,
-            CallOptions? options = null    
+            CallOptions? options = null
         );
 
         /// <summary>
-        /// Discard the transaction.  Any effects are discarded from Dgraph
+        /// Discard the transaction. Any effects are discarded from Dgraph
         /// and the transaction can't be used again.
         /// </summary>
         Task<FluentResults.Result> Discard(CallOptions? options = null);
-        
+
         /// <summary>
-        /// Commit the transaction.  IF successful, any mutations in this
-        /// transaction are committed in Dgraph.  The transaction can't be 
-        /// used again after a call to Commit.
+        /// Commit the transaction.  If successful, any mutations in this
+        /// transaction are committed in Dgraph. The transaction can't be 
+        /// used again after commit.
         /// </summary>
         Task<FluentResults.Result> Commit(CallOptions? options = null);
 
