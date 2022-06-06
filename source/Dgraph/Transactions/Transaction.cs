@@ -178,6 +178,16 @@ namespace Dgraph.Transactions
             }
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            if (!disposed && TransactionState == TransactionState.OK)
+            {
+                disposed = true;
+
+                await Discard();
+            }            
+        }
+
         #endregion
 
     }

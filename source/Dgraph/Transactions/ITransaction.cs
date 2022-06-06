@@ -46,8 +46,8 @@ namespace Dgraph.Transactions
     /// }
     /// </code>
     /// </summary>
-    public interface ITransaction : IQuery, IDisposable {
-    
+    public interface ITransaction : IQuery, IDisposable, IAsyncDisposable
+    {
         /// <summary>
         /// Run a request that may involve multiple mutations.  
         /// If <see cref="RequestBuilder.CommitNow"/> is set on the request, then
