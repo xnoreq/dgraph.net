@@ -56,7 +56,7 @@ namespace Dgraph.Transactions
 
         public async Task<FluentResults.Result<Response>> QueryWithVars(
             string queryString, 
-            Dictionary<string, string> varMap,
+            IDictionary<string, string> varMap,
             CallOptions? options = null
         ) {
 
