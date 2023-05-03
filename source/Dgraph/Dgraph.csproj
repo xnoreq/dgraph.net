@@ -15,10 +15,10 @@
     <RepositoryUrl>https://github.com/xnoreq/dgraph.net</RepositoryUrl>
     <IncludeSymbols>True</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>2.0.0</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Support Dgraph 21.12.0</PackageReleaseNotes>
+    <PackageReleaseNotes>Support Dgraph 22.0.2</PackageReleaseNotes>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
